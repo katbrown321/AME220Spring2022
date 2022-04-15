@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+<head>
+  <style>
+    body{
+      margin:0;
+    }
+    #container{
+      width: 100vw;
+      height: 100vh;
+      transition: .5s;
+    }
+    .slide_sliding{
+      width: 100vw;
+      height: 100%;
+      background-repeat: no-repeat;
+      background-position: 50% 50%;
+      display: inline-block;
+      transition: 2s;
+      background-size: contain;
+    }
+    .slide_fading{
+      width: 100%;
+      height: 100%;
+      background-repeat: no-repeat;
+      background-position: 50% 50%;
+      display: inline-block;
+      position:absolute;
+      transition: 2s;
+      background-size: contain;
+    }
+    #prev{
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+    }
+    #next{
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+    }
+    #numContainer{
+      position:fixed;
+      width: 60%;
+      left: 20%;
+      text-align:center;
+      bottom:10px;
+    }
+    .active{
+      background:gold;
+    }
+  </style>
+  <script>
+    var allImages = [];
+    var currentSlide = 0;
+    var aniType = 'sliding';
+
+    function start(){
+      var hash = window.location.hash.replace("#","");
+      var markup = "";
+      allImages = hash.split(",");
+      if(allImages[allImages.length - 1] == 'fading')
+      {
+        aniType = 'fading'
+      }
+      allImages.pop();
+      if(aniType == "fading")
+      {
+      aniType = 'fading'
+      for(var i = 0; i < allImages.length; i++){
+        markup += "<div class='slide_fading' style='background-image:url(" + allImages[i] + ")'></div>"
+      }
+      document.getElementById("container").innerHTML = markup;
+      markup = "";
+      for(var i = 0; i < allImages.length; i++){
+        markup += "<button onclick='numClicked(" + i + ")' class='num'>" + (i + 1) + "</button>"
+      }
+      document.getElementById("numContainer").innerHTML = markup;
+      console.log(aniType);
+      }
+      else{
+        console.log(aniType);
+        document.getElementById("container").style.width = allImages.length * 100 + "vw";
+       for(var i = 0; i < allImages.length; i++){
+          markup += "<div class='slide_sliding' style='background-image:url(" + allImages[i] + ")'></div>"
+       }
+        document.getElementById("container").innerHTML = markup;
+      markup = "";
+        for(var i = 0; i < allImages.length; i++){
+          markup += "<button onclick='numClicked(" + i + ")' class='num'>" + (i + 1) + "</button>"
+      }
+      document.getElementById("numContainer").innerHTML = markup;
+      }
+      goToCurrentSlide();
+    }
+
+    var goPrev = function(){
+      currentSlide = currentSlide - 1
+      if(currentSlide < 0){
+        currentSlide = allImages.length;
+      }
+      goToCurrentSlide();
+    }
+
+    var goNext = function(){
+      currentSlide = currentSlide + 1;
+      if(currentSlide >= allImages.length){
+        currentSlide = 0;
+      }
+      goToCurrentSlide();
+    }
+
+    var numClicked = function(n){
+      currentSlide = n;
+      goToCurrentSlide(); 
+    }
+
+    var goToCurrentSlide = function(){
+      var allNumObjs = document.getElementsByClassName("num")
+      if(aniType == "fading"){
+      var allImgObjs = document.getElementsByClassName("slide_fading")
+        for(var i = 0; i < allImgObjs.length; i++){
+          if(i==currentSlide){
+            allImgObjs[i].style.opacity = "1";
+            allNumObjs[i].className = "num active";
+          }
+          else{
+            allImgObjs[i].style.opacity = "0";
+            allNumObjs[i].className = "num";
+          }
+        }
+      }
+      else{
+      var allImgObjs = document.getElementsByClassName("slide_sliding")
+      document.getElementById("container").style.marginLeft = -currentSlide * 100 + "vw";
+      for(var i = 0; i < allImgObjs.length; i++){
+        if(i==currentSlide){
+          allNumObjs[i].className = "num active"; 
+        }
+        else{
+          allNumObjs[i].className = "num"; 
+        }
+      }
+    }
+  }
+
+  </script>
+</head>
+
+<body onload='start()'>
+  <div id='container'>
+  </div>
+  <div id='numContainer'>
+  </div>
+  <button onclick='goPrev()' id='prev'> Prev </button>
+  <button onclick='goNext()' id='next'> Next </button>
+</body>
+
+
+</html>
+
+© 2022 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
